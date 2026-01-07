@@ -1,7 +1,9 @@
 # Dori
+
 A calendar made with React and Tailwind CSS from scratch (without external libraries).
 
 # Status
+
 A work in progress. Check the `wip` branch for progress.
 
 # React + TypeScript + Vite
