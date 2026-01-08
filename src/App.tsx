@@ -59,12 +59,8 @@ function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }
 
-function dateKey(
-  year: string | number,
-  month: string | number,
-  day: string | number,
-): string {
-  return `${year}.${month}.${day}`;
+function dateKey(date: Date): string {
+  return `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
 }
 
 function CalendarCell({
@@ -72,23 +68,27 @@ function CalendarCell({
   index,
   onClick,
   mark = false,
+  isToday = false,
 }: {
   bgColor?: string;
   index?: string | number;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   mark?: boolean;
+  isToday?: boolean;
 }) {
   bgColor =
     bgColor ??
-    `${index ? "hover:brightness-120 active:brightness-120 hover:bg-[#6d9886] active:bg-[#6d9886] hover:border-[#6d9886] hover:text-[#f7f7f7] active:border-[#6d9886] active:text-[#f7f7f7] border-2 border-[#393E46] cursor-pointer" : "bg-[#6d9886]/15 brightness-40"}`;
-  const markStyle = mark
-    ? "brightness-100 bg-[#6d9886] !border-[#6d9886] text-[#f7f7f7]"
-    : "";
+    `${index ? "hover:brightness-120 active:brightness-120 hover:bg-accent active:bg-accent hover:border-accent hover:text-bg active:border-accent active:text-bg border-2 border-border cursor-pointer" : "bg-accent/15 brightness-40"}`;
+  const markStyle = isToday
+    ? "brightness-100 bg-border border-border text-text-primary"
+    : mark
+      ? "brightness-100 bg-accent !border-accent text-text-primary"
+      : "";
   return (
     <button
       onClick={onClick}
       className={
-        `${bgColor} text-[#393E46] w-9 h-9 lg:w-15 lg:h-15 text-center rounded-full transition select-none text-base font-oswald ` +
+        `${bgColor} text-text-inverse w-9 h-9 lg:w-15 lg:h-15 text-center rounded-full transition select-none text-base font-oswald ` +
         markStyle
       }
     >
@@ -115,12 +115,12 @@ function ModalView({
       onClick={() => setVisibility((prev) => !prev)}
       className={
         (visibility ? "visible" : "hidden") +
-        " fixed inset-0 flex items-end pb-6 lg:items-center justify-center bg-[#6D9886]/30 z-50 backdrop-brightness-110 backdrop-blur-xs"
+        " fixed inset-0 flex items-end pb-6 lg:items-center justify-center bg-accent/30 z-50 backdrop-brightness-110 backdrop-blur-xs"
       }
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-[#f7f7f7] w-[90%] lg:w-[80%] h-[70%] rounded-3xl border-3 border-[#393E46] shadow-sm"
+        className="bg-bg w-[90%] lg:w-[80%] h-[70%] rounded-3xl border-3 border-border shadow-sm"
       >
         {children}
       </div>
@@ -128,32 +128,56 @@ function ModalView({
   );
 }
 
-function CalendarView({ month, year }: { month?: number; year?: number }) {
+function CalendarView({
+  month,
+  year,
+}: {
+  month?: number;
+  year?: number;
+  markToday?: boolean;
+}) {
   const [{ month: curMonth, year: curYear }, setDate] = useState(() => ({
     month: month ?? new Date().getMonth(),
     year: year ?? new Date().getFullYear(),
   }));
 
   const [modalVisibility, setModalVisibility] = useState(false);
-  const [marks, setMarks] = useState({});
+  const [marks, setMarks] = useState<Set<string>>(new Set());
 
-  const calendarData = useMemo(() => getCalendarData(year), [curYear]);
+  const calendarData = useMemo(() => getCalendarData(curYear), [curYear]);
   const data = calendarData[mod(curMonth, calendarData.length)];
   var days = useMemo(
     () => [
-      ...Array.from({ length: data.weekday }, (_) => <CalendarCell />),
+      ...Array.from({ length: data.weekday }, (_, i) => (
+        <CalendarCell key={`unused-a-${i}`} />
+      )),
       ...data.days.map((d) => (
         <CalendarCell
+          key={dateKey(d)}
           index={d.getDate()}
-          onClick={() => setModalVisibility((prev) => !prev)}
+          mark={marks.has(dateKey(d))}
+          isToday={dateKey(d) === dateKey(new Date())}
+          onClick={() => {
+            setModalVisibility((prev) => !prev);
+            setMarks((prev) => {
+              const next = new Set(prev);
+              const key: string = dateKey(d);
+              if (next.has(key)) {
+                next.delete(key);
+              } else {
+                next.add(key);
+              }
+              return next;
+            });
+          }}
         />
       )),
       ...Array.from(
         { length: 7 * 6 - (data.weekday + data.days.length) },
-        (_) => <CalendarCell />,
+        (_, i) => <CalendarCell key={`unused-b-${i}`} />,
       ),
     ],
-    [data],
+    [data, marks],
   );
 
   function updateDate(operation: "plus" | "minus") {
@@ -171,26 +195,26 @@ function CalendarView({ month, year }: { month?: number; year?: number }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="relative border-3 border-[#393e46] rounded-3xl p-6 py-10 grid grid-cols-7 gap-3">
+      <div className="relative border-3 border-border rounded-3xl p-6 py-10 grid grid-cols-7 gap-3">
         {days}
         <div className="absolute -bottom-5 left-1/2 -translate-x-1/2">
-          <div className="bg-[#393e46] text-[#f7f7f7] px-4 py-2 rounded-full text-sm flex items-center select-none font-medium">
+          <div className="bg-border text-text-primary px-4 py-2 rounded-full text-sm flex items-center select-none font-medium">
             {curYear}
             <BsDot />
             {MONTH_NAMES.at(curMonth)}
           </div>
         </div>
       </div>
-      <div className="border-3 border-[#393e46] w-full h-30 rounded-full flex items-center flex overflow-hidden">
+      <div className="border-3 border-border w-full h-30 rounded-full flex items-center flex overflow-hidden">
         <div
           onClick={() => updateDate("minus")}
-          className="flex-1 flex items-center justify-start cursor-pointer hover:bg-[#6d9886]/30 active:bg-[#6d9886]/30 hover:brightness-140 active:brightness-140 px-10 h-full"
+          className="flex-1 flex items-center justify-start cursor-pointer hover:bg-accent/30 active:bg-accent/30 hover:brightness-140 active:brightness-140 px-10 h-full"
         >
           <GrPrevious className="" size={25} />
         </div>
         <div
           onClick={() => updateDate("plus")}
-          className="flex-1 flex items-center justify-end cursor-pointer hover:bg-[#6d9886]/30 active:bg-[#6d9886]/30 hover:brightness-140 active:brightness-140 px-10 h-full"
+          className="flex-1 flex items-center justify-end cursor-pointer hover:bg-accent/30 active:bg-accent/30 hover:brightness-140 active:brightness-140 px-10 h-full"
         >
           <GrNext className="" size={25} />
         </div>
@@ -200,8 +224,11 @@ function CalendarView({ month, year }: { month?: number; year?: number }) {
         setVisibility={setModalVisibility}
       >
         <div className="w-full h-full flex items-center justify-center py-5 text-3xl font-roboto">
-          <div className="text-center items-center justify-center flex gap-5 bg-[#6D9886]/83 p-5 rounded-sm text-white border-2 border-black border-dotted">
-            <IoMdConstruct size={30}/>
+          <div
+            onClick={() => setModalVisibility((prev) => !prev)}
+            className="cursor-pointer text-center items-center justify-center flex gap-5 bg-accent/80 p-5 rounded-sm text-white border-2 border-border"
+          >
+            <IoMdConstruct size={30} />
             <h1>A work in progress!</h1>
           </div>
         </div>
@@ -212,10 +239,10 @@ function CalendarView({ month, year }: { month?: number; year?: number }) {
 
 function App() {
   return (
-    <div className="flex flex-col justify-center items-center h-screen bg-[#f7f7f7] pb-10">
-      <div className="flex-1 flex w-full h-full flex-col justify-center text-[#393e46] items-center gap-2 select-none">
-        <h1 className="text-[#6d9886] font-medium text-5xl">Dori</h1>
-        <p className="text-[#393e46] rounded-full px-2 py-1 text-sm font-thin">
+    <div className="flex flex-col justify-center items-center h-screen bg-bg pb-10">
+      <div className="flex-1 flex w-full h-full flex-col justify-center text-text-primary items-center gap-2 select-none">
+        <h1 className="text-accent font-medium text-5xl">Dori</h1>
+        <p className="text-text-inverse rounded-full px-2 py-1 text-sm font-thin">
           Your daily journal
         </p>
       </div>
