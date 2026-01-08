@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { BsDot } from "react-icons/bs";
+import { LuConstruction } from "react-icons/lu";
+import { IoMdConstruct } from "react-icons/io";
 
 import "./App.css";
 
@@ -53,26 +55,77 @@ function getCalendarData(year?: number): CalendarMonth[] {
   return calendar;
 }
 
+function mod(n: number, m: number) {
+  return ((n % m) + m) % m;
+}
+
+function dateKey(
+  year: string | number,
+  month: string | number,
+  day: string | number,
+): string {
+  return `${year}.${month}.${day}`;
+}
+
 function CalendarCell({
   bgColor,
   index,
+  onClick,
+  mark = false,
 }: {
   bgColor?: string;
   index?: string | number;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  mark?: boolean;
 }) {
   bgColor =
-    bgColor ?? `${index ? "bg-[#6d9886] hover:brightness-120 cursor-pointer" : "bg-[#6d9886]/15 brightness-40"}`;
+    bgColor ??
+    `${index ? "hover:brightness-120 active:brightness-120 hover:bg-[#6d9886] active:bg-[#6d9886] hover:border-[#6d9886] hover:text-[#f7f7f7] active:border-[#6d9886] active:text-[#f7f7f7] border-2 border-[#393E46] cursor-pointer" : "bg-[#6d9886]/15 brightness-40"}`;
+  const markStyle = mark
+    ? "brightness-100 bg-[#6d9886] !border-[#6d9886] text-[#f7f7f7]"
+    : "";
   return (
     <button
-      className={`${bgColor} text-white w-15 h-15 text-center rounded-full transition select-none`}
+      onClick={onClick}
+      className={
+        `${bgColor} text-[#393E46] w-9 h-9 lg:w-15 lg:h-15 text-center rounded-full transition select-none text-base font-oswald ` +
+        markStyle
+      }
     >
       {index ?? ""}
     </button>
   );
 }
 
-function mod(n: number, m: number) {
-  return ((n % m) + m) % m;
+function ModalView({
+  visibility,
+  setVisibility,
+  children,
+  ...props
+}: {
+  visibility: boolean;
+  setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  children?: React.ReactNode;
+}) {
+  if (!visibility) return null;
+
+  return (
+    <div
+      {...props}
+      onClick={() => setVisibility((prev) => !prev)}
+      className={
+        (visibility ? "visible" : "hidden") +
+        " fixed inset-0 flex items-end pb-6 lg:items-center justify-center bg-[#6D9886]/30 z-50 backdrop-brightness-110 backdrop-blur-xs"
+      }
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-[#f7f7f7] w-[90%] lg:w-[80%] h-[70%] rounded-3xl border-3 border-[#393E46] shadow-sm"
+      >
+        {children}
+      </div>
+    </div>
+  );
 }
 
 function CalendarView({ month, year }: { month?: number; year?: number }) {
@@ -81,12 +134,20 @@ function CalendarView({ month, year }: { month?: number; year?: number }) {
     year: year ?? new Date().getFullYear(),
   }));
 
+  const [modalVisibility, setModalVisibility] = useState(false);
+  const [marks, setMarks] = useState({});
+
   const calendarData = useMemo(() => getCalendarData(year), [curYear]);
   const data = calendarData[mod(curMonth, calendarData.length)];
   var days = useMemo(
     () => [
       ...Array.from({ length: data.weekday }, (_) => <CalendarCell />),
-      ...data.days.map((d) => <CalendarCell index={d.getDate()} />),
+      ...data.days.map((d) => (
+        <CalendarCell
+          index={d.getDate()}
+          onClick={() => setModalVisibility((prev) => !prev)}
+        />
+      )),
       ...Array.from(
         { length: 7 * 6 - (data.weekday + data.days.length) },
         (_) => <CalendarCell />,
@@ -123,25 +184,36 @@ function CalendarView({ month, year }: { month?: number; year?: number }) {
       <div className="border-3 border-[#393e46] w-full h-30 rounded-full flex items-center flex overflow-hidden">
         <div
           onClick={() => updateDate("minus")}
-          className="flex-1 flex items-center justify-start cursor-pointer hover:bg-[#6d9886]/15 hover:brightness-40 px-10 h-full"
+          className="flex-1 flex items-center justify-start cursor-pointer hover:bg-[#6d9886]/30 active:bg-[#6d9886]/30 hover:brightness-140 active:brightness-140 px-10 h-full"
         >
           <GrPrevious className="" size={25} />
         </div>
         <div
           onClick={() => updateDate("plus")}
-          className="flex-1 flex items-center justify-end cursor-pointer hover:bg-[#6d9886]/15 hover:brightness-40 px-10 h-full"
+          className="flex-1 flex items-center justify-end cursor-pointer hover:bg-[#6d9886]/30 active:bg-[#6d9886]/30 hover:brightness-140 active:brightness-140 px-10 h-full"
         >
           <GrNext className="" size={25} />
         </div>
       </div>
+      <ModalView
+        visibility={modalVisibility}
+        setVisibility={setModalVisibility}
+      >
+        <div className="w-full h-full flex items-center justify-center py-5 text-3xl font-roboto">
+          <div className="text-center items-center justify-center flex gap-5 bg-[#6D9886]/83 p-5 rounded-sm text-white border-2 border-black border-dotted">
+            <IoMdConstruct size={30}/>
+            <h1>A work in progress!</h1>
+          </div>
+        </div>
+      </ModalView>
     </div>
   );
 }
 
 function App() {
   return (
-    <div className="flex flex-col justify-center items-center h-screen bg-[#f7f7f7] p-20">
-      <div className="flex-1 flex flex-col justify-start text-[#393e46] items-center gap-2 select-none">
+    <div className="flex flex-col justify-center items-center h-screen bg-[#f7f7f7] pb-10">
+      <div className="flex-1 flex w-full h-full flex-col justify-center text-[#393e46] items-center gap-2 select-none">
         <h1 className="text-[#6d9886] font-medium text-5xl">Dori</h1>
         <p className="text-[#393e46] rounded-full px-2 py-1 text-sm font-thin">
           Your daily journal

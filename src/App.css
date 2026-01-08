@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+    --font-roboto: "Roboto", sans-serif;
+    --font-oswald: "Oswald", sans-serif;
+
+    --color-bg: #F7F7F7;
+    --color-accent: #6D9886;
+    --color-border: #393E46;
+}
+
+body {
+  font-family:
+    "Roboto",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+}
