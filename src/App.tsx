@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { BsDot } from "react-icons/bs";
-import { LuConstruction } from "react-icons/lu";
 import { IoMdConstruct } from "react-icons/io";
 
 import "./App.css";
@@ -59,7 +58,7 @@ function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }
 
-function dateKey(date: Date): string {
+function getDateKey(date: Date): string {
   return `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
 }
 
@@ -153,15 +152,15 @@ function CalendarView({
       )),
       ...data.days.map((d) => (
         <CalendarCell
-          key={dateKey(d)}
+          key={getDateKey(d)}
           index={d.getDate()}
-          mark={marks.has(dateKey(d))}
-          isToday={dateKey(d) === dateKey(new Date())}
+          mark={marks.has(getDateKey(d))}
+          isToday={getDateKey(d) === getDateKey(new Date())}
           onClick={() => {
             setModalVisibility((prev) => !prev);
             setMarks((prev) => {
               const next = new Set(prev);
-              const key: string = dateKey(d);
+              const key: string = getDateKey(d);
               if (next.has(key)) {
                 next.delete(key);
               } else {
