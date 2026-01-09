@@ -39,6 +39,8 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build
+        env:
+          BASE: /${{ github.event.repository.name }}/
         run: bun run unsafe-build
 
       - name: Setup Pages
