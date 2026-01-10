@@ -1,8 +1,3 @@
-export interface CalendarMonth {
-  days: Date[];
-  weekday: number;
-}
-
 export const DAY_NAMES: string[] = [
   "Sunday",
   "Monday",

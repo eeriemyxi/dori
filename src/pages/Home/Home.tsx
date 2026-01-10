@@ -1,6 +1,6 @@
 import { Calendar } from "@/components/Calendar";
 
-function Home() {
+export default function Home() {
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-bg pb-10">
       <div className="flex-1 flex w-full h-full flex-col justify-center text-text-primary items-center gap-2 select-none">
@@ -13,5 +13,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;
