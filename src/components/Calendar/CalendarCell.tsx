@@ -1,33 +1,39 @@
+import type { DateKey, MarkType } from "./types";
+
 export function CalendarCell({
-  bgColor,
-  index,
+  text,
+  dateKey,
   onClick,
-  mark = false,
-  isToday = false,
+  mark = "normal",
 }: {
-  bgColor?: string;
-  index?: string | number;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  mark?: boolean;
-  isToday?: boolean;
+  text: string | number;
+  dateKey?: DateKey;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>, dateKey?: DateKey) => void;
+  mark?: MarkType;
 }) {
-  bgColor =
-    bgColor ??
-    `${index ? "hover:brightness-120 active:brightness-120 hover:bg-accent active:bg-accent hover:border-accent hover:text-bg active:border-accent active:text-bg border-2 border-border cursor-pointer" : "bg-accent/15 brightness-40"}`;
-  const markStyle = isToday
-    ? "brightness-100 bg-border border-border text-text-primary"
-    : mark
-      ? "brightness-100 bg-accent !border-accent text-text-primary"
-      : "";
+  var common =
+    "w-9 h-9 lg:w-15 lg:h-15 text-center rounded-full transition select-none font-oswald";
+
+  var markStyle = "";
+  if (mark == "normal") {
+    markStyle =
+      "border-border hover:bg-accent active:bg-accent hover:text-bg active:text-bg hover:border-accent active:border-accent hover:brightness-120 active:brightness-120 border-2 cursor-pointer";
+  } else if (mark == "today") {
+    markStyle =
+      "bg-border border-border text-text-primary hover:bg-accent active:bg-accent hover:text-bg active:text-bg hover:border-accent active:border-accent hover:brightness-120 active:brightness-120 border-2 cursor-pointer";
+  } else if (mark == "green") {
+    markStyle =
+      "bg-accent border-accent text-text-primary hover:brightness-120 active:brightness-120 border-2 cursor-pointer";
+  } else if (mark == "inactive") {
+    markStyle = "bg-accent/15 brightness-40 ";
+  }
+
   return (
     <button
-      onClick={onClick}
-      className={
-        `${bgColor} text-text-inverse w-9 h-9 lg:w-15 lg:h-15 text-center rounded-full transition select-none text-base font-oswald ` +
-        markStyle
-      }
+      onClick={(e) => onClick && onClick(e, dateKey)}
+      className={`${common} ${markStyle}`}
     >
-      {index ?? ""}
+      {text}
     </button>
   );
 }

@@ -1,19 +1,17 @@
 export function Modal({
   visibility,
-  setVisibility,
   children,
-  ...props
+  onUnboundClick,
 }: {
   visibility: boolean;
-  setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
   children?: React.ReactNode;
+  onUnboundClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }) {
   if (!visibility) return null;
 
   return (
     <div
-      {...props}
-      onClick={() => setVisibility((prev) => !prev)}
+      onClick={onUnboundClick}
       className={
         (visibility ? "visible" : "hidden") +
         " fixed inset-0 flex items-end pb-6 lg:items-center justify-center bg-accent/30 z-50 backdrop-brightness-110 backdrop-blur-xs"

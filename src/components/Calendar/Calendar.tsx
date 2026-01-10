@@ -2,13 +2,15 @@ import { useState, useMemo } from "react";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { BsDot } from "react-icons/bs";
 import { IoMdConstruct } from "react-icons/io";
+import { FaGoogleDrive } from "react-icons/fa";
 
-import type { CalendarMonth } from ".";
+import type { CalendarMonth, DateKey, MarkType } from "./types";
 import { CalendarCell, MONTH_NAMES } from ".";
 import { Modal } from "@/components/Modal/";
 import { isLeap, mod } from "@/utils";
+import { GDRIVE_CLIENT_ID, REDIRECT_URI } from "@/constants";
 
-export function getDateKey(date: Date): string {
+export function getDateKey(date: Date): DateKey {
   return `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
 }
 
@@ -30,50 +32,44 @@ export function getCalendarData(year?: number): CalendarMonth[] {
 export function Calendar({
   month,
   year,
+  marks,
+  onDateClick,
 }: {
-  month?: number;
-  year?: number;
-  markToday?: boolean;
+  month: number;
+  year: number;
+  marks: Map<DateKey, MarkType>;
+  onDateClick?: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    dateKey?: DateKey,
+  ) => void;
 }) {
   const [{ month: curMonth, year: curYear }, setDate] = useState(() => ({
-    month: month ?? new Date().getMonth(),
-    year: year ?? new Date().getFullYear(),
+    month: month,
+    year: year,
   }));
-
-  const [modalVisibility, setModalVisibility] = useState(false);
-  const [marks, setMarks] = useState<Set<string>>(new Set());
 
   const calendarData = useMemo(() => getCalendarData(curYear), [curYear]);
   const data = calendarData[mod(curMonth, calendarData.length)];
+
   var days = useMemo(
     () => [
       ...Array.from({ length: data.weekday }, (_, i) => (
-        <CalendarCell key={`unused-a-${i}`} />
+        <CalendarCell text="" key={`unused-a-${i}`} mark="inactive" />
       )),
       ...data.days.map((d) => (
         <CalendarCell
           key={getDateKey(d)}
-          index={d.getDate()}
-          mark={marks.has(getDateKey(d))}
-          isToday={getDateKey(d) === getDateKey(new Date())}
-          onClick={() => {
-            setModalVisibility((prev) => !prev);
-            setMarks((prev) => {
-              const next = new Set(prev);
-              const key: string = getDateKey(d);
-              if (next.has(key)) {
-                next.delete(key);
-              } else {
-                next.add(key);
-              }
-              return next;
-            });
-          }}
+          text={d.getDate()}
+          dateKey={getDateKey(d)}
+          mark={marks.get(getDateKey(d))}
+          onClick={onDateClick}
         />
       )),
       ...Array.from(
         { length: 7 * 6 - (data.weekday + data.days.length) },
-        (_, i) => <CalendarCell key={`unused-b-${i}`} />,
+        (_, i) => (
+          <CalendarCell text="" key={`unused-b-${i}`} mark="inactive" />
+        ),
       ),
     ],
     [data, marks],
@@ -118,17 +114,6 @@ export function Calendar({
           <GrNext className="" size={25} />
         </div>
       </div>
-      <Modal visibility={modalVisibility} setVisibility={setModalVisibility}>
-        <div className="w-full h-full flex items-center justify-center py-5 text-3xl font-roboto">
-          <div
-            onClick={() => setModalVisibility((prev) => !prev)}
-            className="cursor-pointer text-center items-center justify-center flex gap-5 bg-accent/80 p-5 rounded-sm text-white border-2 border-border"
-          >
-            <IoMdConstruct size={30} />
-            <h1>A work in progress!</h1>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }
