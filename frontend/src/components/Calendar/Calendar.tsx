@@ -8,7 +8,6 @@ import type { CalendarMonth, DateKey, MarkType } from "./types";
 import { CalendarCell, MONTH_NAMES } from ".";
 import { Modal } from "@/components/Modal/";
 import { isLeap, mod } from "@/utils";
-import { GDRIVE_CLIENT_ID, REDIRECT_URI } from "@/constants";
 
 export function getDateKey(date: Date): DateKey {
   return `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
@@ -20,8 +19,8 @@ export function getCalendarData(year?: number): CalendarMonth[] {
     days: [],
     weekday: 0,
   }));
-  for (var i = 1; i <= 365 + Number(isLeap(year)); i++) {
-    var date = new Date(year, 0, i);
+  for (let i = 1; i <= 365 + Number(isLeap(year)); i++) {
+    const date = new Date(year, 0, i);
     calendar[date.getMonth()].days.push(new Date(date));
     date.setDate(1);
     calendar[date.getMonth()].weekday = date.getDay();
@@ -51,7 +50,7 @@ export function Calendar({
   const calendarData = useMemo(() => getCalendarData(curYear), [curYear]);
   const data = calendarData[mod(curMonth, calendarData.length)];
 
-  var days = useMemo(
+  const days = useMemo(
     () => [
       ...Array.from({ length: data.weekday }, (_, i) => (
         <CalendarCell text="" key={`unused-a-${i}`} mark="inactive" />
@@ -77,8 +76,8 @@ export function Calendar({
 
   function updateDate(operation: "plus" | "minus") {
     setDate(({ month, year }) => {
-      var nextMonth = operation == "plus" ? month + 1 : month - 1;
-      var nextYear = year;
+      const nextMonth = operation == "plus" ? month + 1 : month - 1;
+      const nextYear = year;
       if (nextMonth > 11) {
         return { month: 0, year: year + 1 };
       } else if (nextMonth < 0) {

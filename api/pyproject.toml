@@ -1,0 +1,12 @@
+[project]
+name = "api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.128.0",
+    "libsql>=0.1.11",
+    "requests>=2.32.5",
+    "yarl>=1.22.0",
+]

@@ -11,10 +11,10 @@ export function CalendarCell({
   onClick?: (e: React.MouseEvent<HTMLButtonElement>, dateKey?: DateKey) => void;
   mark?: MarkType;
 }) {
-  var common =
+  const common =
     "w-9 h-9 lg:w-15 lg:h-15 text-center rounded-full transition select-none font-oswald";
 
-  var markStyle = "";
+  let markStyle = "";
   if (mark == "normal") {
     markStyle =
       "border-border hover:bg-accent active:bg-accent hover:text-bg active:text-bg hover:border-accent active:border-accent hover:brightness-120 active:brightness-120 border-2 cursor-pointer";
