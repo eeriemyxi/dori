@@ -33,6 +33,7 @@ export function Calendar({
   year,
   marks,
   onDateClick,
+  navItems,
 }: {
   month: number;
   year: number;
@@ -41,6 +42,7 @@ export function Calendar({
     e: React.MouseEvent<HTMLButtonElement>,
     dateKey?: DateKey,
   ) => void;
+  navItems?: React.ReactNode[];
 }) {
   const [{ month: curMonth, year: curYear }, setDate] = useState(() => ({
     month: month,
@@ -91,12 +93,13 @@ export function Calendar({
     <div className="flex flex-col gap-6">
       <div className="relative border-3 border-border rounded-3xl p-6 py-10 grid grid-cols-7 gap-3">
         {days}
-        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2">
+        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex gap-3">
           <div className="bg-border text-text-primary px-4 py-2 rounded-full text-sm flex items-center select-none font-medium">
             {curYear}
             <BsDot />
             {MONTH_NAMES.at(curMonth)}
           </div>
+          {navItems && [...navItems]}
         </div>
       </div>
       <div className="border-3 border-border w-full h-30 rounded-full flex items-center flex overflow-hidden">

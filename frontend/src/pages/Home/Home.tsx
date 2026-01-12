@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
+import { IoIosSettings } from "react-icons/io";
 
 import {
   Calendar,
@@ -31,6 +32,9 @@ export default function Home() {
         onDateClick={(_, key) => {
           key && setActiveDate(key);
         }}
+        navItems={[<div className="bg-border text-text-primary p-2 rounded-full flex items-center hover:brightness-120 cursor-pointer select-none">
+                     <IoIosSettings size={25} />
+                   </div>]}
       />
       <MarkdownEditorModal value="# Hello world" visibility={activeDate !== null} onUnboundClick={() => setActiveDate(null)} onSave={(_, text) => {setActiveDate(null)}}/>
     </div>

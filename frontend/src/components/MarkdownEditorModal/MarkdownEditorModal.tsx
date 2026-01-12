@@ -2,7 +2,8 @@ import { useState, useRef } from "react";
 import { FaLink } from "react-icons/fa6";
 import { Modal } from "@/components/Modal";
 import Markdown from "react-markdown";
-import "./MarkdownEditorModal.module.scss";
+
+import styles from "./MarkdownEditorModal.module.scss";
 
 export default function MarkdownEditorModal({
   visibility,
@@ -39,12 +40,12 @@ export default function MarkdownEditorModal({
       >
         {isEditable ? (
           <textarea
-            className="w-full h-full outline-0"
+            className="w-full h-full outline-0 font-mono"
             value={editorText}
             onChange={(e) => setEditorText(e.target.value)}
           />
         ) : (
-          <div className="scroll-auto-hide flex-1 w-full h-full font-roboto overflow-auto px-3 pl-0 break-words">
+          <div className={`${styles.markdown} scroll-auto-hide flex-1 w-full h-full font-roboto overflow-auto px-3 pl-0 break-words`}>
             <Markdown
               components={{
                 a: ({ node, ...props }) => (
