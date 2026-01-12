@@ -45,7 +45,9 @@ export default function MarkdownEditorModal({
             onChange={(e) => setEditorText(e.target.value)}
           />
         ) : (
-          <div className={`${styles.markdown} scroll-auto-hide flex-1 w-full h-full font-roboto overflow-auto px-3 pl-0 break-words`}>
+          <div
+            className={`${styles.markdown} scroll-auto-hide flex-1 w-full h-full font-roboto overflow-auto px-3 pl-0 break-words`}
+          >
             <Markdown
               components={{
                 a: ({ node, ...props }) => (
