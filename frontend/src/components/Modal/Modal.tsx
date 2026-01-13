@@ -1,12 +1,18 @@
+import {useEffect} from "react"
+
 export function Modal({
   visibility,
   children,
   onUnboundClick,
+  onVisible
 }: {
   visibility: boolean;
   children?: React.ReactNode;
   onUnboundClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onVisible?: () => void;
 }) {
+  useEffect(() => {if (visibility) onVisible && onVisible()})
+
   return (
     <div
       onClick={onUnboundClick}

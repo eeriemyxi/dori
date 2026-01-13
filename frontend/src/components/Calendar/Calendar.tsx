@@ -37,7 +37,7 @@ export function Calendar({
 }: {
   month: number;
   year: number;
-  marks: Map<DateKey, MarkType>;
+  marks: Record<DateKey, MarkType>;
   onDateClick?: (
     e: React.MouseEvent<HTMLButtonElement>,
     dateKey?: DateKey,
@@ -62,7 +62,7 @@ export function Calendar({
           key={getDateKey(d)}
           text={d.getDate()}
           dateKey={getDateKey(d)}
-          mark={marks.get(getDateKey(d))}
+          mark={marks[getDateKey(d)]}
           onClick={onDateClick}
         />
       )),

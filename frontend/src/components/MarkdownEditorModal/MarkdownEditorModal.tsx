@@ -10,19 +10,20 @@ export default function MarkdownEditorModal({
   value = "",
   onSave,
   onUnboundClick,
+  onVisible
 }: {
   visibility: boolean;
   value?: string;
   onSave?: (e: React.MouseEvent<HTMLButtonElement>, editorText: string) => void;
   onUnboundClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onVisible?: () => void;
 }) {
   const lastClickRef = useRef<number>(0);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [editorText, setEditorText] = useState(value);
-  const [saveButtonVisible, setSaveButtonVisible] = useState(true);
 
   return (
-    <Modal visibility={visibility} onUnboundClick={onUnboundClick}>
+    <Modal visibility={visibility} onUnboundClick={onUnboundClick} onVisible={onVisible}>
       <div
         className="scroll-auto-hide w-full h-full flex flex-col rounded-xl overflow-hidden p-3 py-4 items-center"
         onClick={() => {
@@ -32,7 +33,6 @@ export default function MarkdownEditorModal({
             const sel = window.getSelection?.();
             sel?.removeAllRanges();
             setIsEditable((prev) => !prev);
-            setSaveButtonVisible((prev) => !prev);
           } else {
             lastClickRef.current = now;
           }
@@ -69,7 +69,7 @@ export default function MarkdownEditorModal({
           onClick={(e) => onSave && onSave(e, editorText)}
           className={
             "bg-bg w-[80%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-accent hover:text-text-primary hover:border-accent hover:brightness-120 border-border border-2 transition " +
-            (saveButtonVisible ? "visible" : "hidden")
+            (isEditable ? "hidden" : "visible")
           }
         >
           Save
