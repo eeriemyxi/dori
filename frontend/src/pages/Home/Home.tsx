@@ -54,8 +54,8 @@ export default function Home() {
               </div>
             }
           >
-            <button className="block w-full px-4 py-2 text-left hover:bg-accent/30 active:bg-accent/30 hover:brightness-140 active:brightness-140 cursor-pointer">
-              Profile
+            <button onClick={() => window.location.href = "/sign-up"} className="block w-full px-4 py-2 text-left hover:bg-accent/30 active:bg-accent/30 hover:brightness-140 active:brightness-140 cursor-pointer">
+              Sign Up
             </button>
             <button className="block w-full px-4 py-2 text-left hover:bg-accent/30 active:bg-accent/30 hover:brightness-140 active:brightness-140 cursor-pointer">
               Settings
