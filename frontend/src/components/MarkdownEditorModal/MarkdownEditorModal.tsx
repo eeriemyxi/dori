@@ -45,7 +45,7 @@ export default function MarkdownEditorModal({
       onVisible={onVisible}
     >
       <div
-        className="scroll-auto-hide w-full h-full flex flex-col rounded-xl overflow-hidden p-3 py-4 items-center"
+        className="scroll-auto-hide w-full h-full flex flex-col rounded-xl overflow-hidden p-3 pt-0 items-center"
         onClick={() => {
           const now = Date.now();
           if (now - lastClickRef.current <= 200) {
@@ -60,7 +60,7 @@ export default function MarkdownEditorModal({
       >
         {isEditable ? (
           <textarea
-            className="w-full h-full outline-0 font-mono"
+            className="w-full h-full outline-0 font-mono pt-3"
             value={editorText}
             onChange={(e) => setEditorText(e.target.value)}
           />
@@ -88,14 +88,13 @@ export default function MarkdownEditorModal({
         )}
         <div
           className={
-            "flex w-[80%] gap-5 " +
-            (showDelete ? "translate-x-[10%]" : "justify-center")
+            "flex w-full gap-3 justify-center"
           }
         >
           <button
             onClick={(e) => onSave && onSave(e, editorText)}
             className={
-              "bg-bg w-[80%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-accent hover:text-text-primary hover:border-accent hover:brightness-120 border-border border-2 transition " +
+              "bg-bg flex-1 h-15 text-text-inverse rounded-sm shadow-lg hover:bg-accent hover:text-text-primary hover:border-accent hover:brightness-120 active:bg-accent active:text-text-primary active:border-accent active:brightness-120 border-border border-2 transition " +
               (isEditable ? "hidden" : "visible")
             }
           >
@@ -105,7 +104,7 @@ export default function MarkdownEditorModal({
             <button
               onClick={(e) => onDelete && onDelete(e, editorText)}
               className={
-                "bg-bg w-[10%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-red-400 hover:text-text-primary hover:border-red-400 hover:brightness-120 border-border border-2 transition flex justify-center items-center " +
+                "bg-bg w-[20%] lg:w-[10%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-red-400 hover:text-text-primary hover:border-red-400 hover:brightness-120 active:bg-red-400 active:text-text-primary active:border-red-400 active:brightness-120 border-border border-2 transition flex justify-center items-center " +
                 (isEditable ? "hidden" : "visible")
               }
             >
@@ -116,7 +115,7 @@ export default function MarkdownEditorModal({
             <button
               onClick={(e) => onBack && onBack(e, editorText)}
               className={
-                "bg-bg w-[10%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-orange-400/80 hover:text-text-primary hover:border-orange-400/80 hover:brightness-120 border-border border-2 transition flex justify-center items-center " +
+                "bg-bg w-[20%] lg:w-[10%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-orange-400/80 hover:text-text-primary hover:border-orange-400/80 hover:brightness-120 active:bg-orange-400/80 active:text-text-primary active:border-orange-400/80 active:brightness-120 border-border border-2 transition flex justify-center items-center " +
                 (isEditable ? "hidden" : "visible")
               }
             >

@@ -27,7 +27,7 @@ export function Modal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-bg w-[90%] lg:w-[80%] h-[70%] rounded-3xl border-3 border-border shadow-sm transition duration-150 ${visibility ? "scale-100" : "scale-95 select-none"}`}
+        className={`bg-bg w-[90%] lg:w-[80%] h-[80%] lg:h-[70%] rounded-3xl border-3 border-border shadow-sm transition duration-150 ${visibility ? "scale-100" : "scale-95 select-none"}`}
       >
         {children}
       </div>
