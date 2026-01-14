@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { FaLink } from "react-icons/fa6";
 import { Modal } from "@/components/Modal";
 import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm"
 
 import styles from "./MarkdownEditorModal.module.scss";
 
@@ -49,6 +50,7 @@ export default function MarkdownEditorModal({
             className={`${styles.markdown} scroll-auto-hide flex-1 w-full h-full font-roboto overflow-auto px-3 pl-0 break-words`}
           >
             <Markdown
+              remarkPlugins={[remarkGfm]}
               components={{
                 a: ({ node, ...props }) => (
                   <a

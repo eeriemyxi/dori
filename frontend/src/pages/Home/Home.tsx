@@ -69,7 +69,6 @@ export default function Home() {
         key={activeDate ?? "closed"}
         value={editorValue}
         visibility={activeDate !== null}
-        onUnboundClick={() => setActiveDate(null)}
         onSave={(_, text) => {
           if (activeDate === null) throw new Error("not possible")
           data.notes[activeDate] = {
