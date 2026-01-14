@@ -1,8 +1,10 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
+
 import { FaLink } from "react-icons/fa6";
-import { Modal } from "@/components/Modal";
 import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm"
+import remarkGfm from "remark-gfm";
+
+import { Modal } from "@/components/Modal";
 
 import styles from "./MarkdownEditorModal.module.scss";
 
@@ -11,7 +13,7 @@ export default function MarkdownEditorModal({
   value = "",
   onSave,
   onUnboundClick,
-  onVisible
+  onVisible,
 }: {
   visibility: boolean;
   value?: string;
@@ -24,7 +26,11 @@ export default function MarkdownEditorModal({
   const [editorText, setEditorText] = useState(value);
 
   return (
-    <Modal visibility={visibility} onUnboundClick={onUnboundClick} onVisible={onVisible}>
+    <Modal
+      visibility={visibility}
+      onUnboundClick={onUnboundClick}
+      onVisible={onVisible}
+    >
       <div
         className="scroll-auto-hide w-full h-full flex flex-col rounded-xl overflow-hidden p-3 py-4 items-center"
         onClick={() => {

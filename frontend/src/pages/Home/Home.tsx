@@ -1,31 +1,32 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
 import { IoIosSettings } from "react-icons/io";
-import * as persist from "@/utils/persistence"
 
 import {
   Calendar,
-  getDateKey,
   type DateKey,
   type MarkType,
+  getDateKey,
 } from "@/components/Calendar";
-
 import MarkdownEditorModal from "@/components/MarkdownEditorModal";
 import Popover from "@/components/Popover";
+import * as persist from "@/utils/persistence";
 
-const DEFAULT_CONTENT = "# Sample Content\n\nYou can double-click or double-tap to edit this content."
+const DEFAULT_CONTENT =
+  "# Sample Content\n\nYou can double-click or double-tap to edit this content.";
 
 export default function Home() {
-  const data = useMemo(() => persist.load_data(), [])
+  const data = useMemo(() => persist.load_data(), []);
   const today = useMemo(() => new Date(), []);
   const [marks, setMarks] = useState(() => {
-    const marks: Record<DateKey, MarkType> = {[getDateKey(today)]: "today"}
+    const marks: Record<DateKey, MarkType> = { [getDateKey(today)]: "today" };
     for (const [key, _] of Object.entries(data.notes)) {
-      marks[key as DateKey] = "green"
+      marks[key as DateKey] = "green";
     }
-    return marks
-  })
+    return marks;
+  });
   const [activeDate, setActiveDate] = useState<DateKey | null>(null);
-  const [editorValue, setEditorValue] = useState(DEFAULT_CONTENT)
+  const [editorValue, setEditorValue] = useState(DEFAULT_CONTENT);
 
   return (
     <div className="flex flex-col justify-center items-center h-dvh bg-bg pb-10">
@@ -40,8 +41,8 @@ export default function Home() {
         year={today.getFullYear()}
         marks={marks}
         onDateClick={(_, key) => {
-          if (!key) return
-          setEditorValue(data.notes[key]?.content ?? DEFAULT_CONTENT)
+          if (!key) return;
+          setEditorValue(data.notes[key]?.content ?? DEFAULT_CONTENT);
           key && setActiveDate(key);
         }}
         navItems={[
@@ -70,15 +71,17 @@ export default function Home() {
         value={editorValue}
         visibility={activeDate !== null}
         onSave={(_, text) => {
-          if (activeDate === null) throw new Error("not possible")
+          if (activeDate === null) throw new Error("not possible");
           data.notes[activeDate] = {
             key: activeDate,
             content: text,
-            lastModified: Math.floor(Date.now()/1000),
-            version: crypto.randomUUID()
-          }
-          setMarks((prev) => {return {...prev, [activeDate]: "green"}})
-          persist.save_data(data)
+            lastModified: Math.floor(Date.now() / 1000),
+            version: crypto.randomUUID(),
+          };
+          setMarks((prev) => {
+            return { ...prev, [activeDate]: "green" };
+          });
+          persist.save_data(data);
           setActiveDate(null);
         }}
       />
