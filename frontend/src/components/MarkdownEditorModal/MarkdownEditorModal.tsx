@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 
 import { FaLink } from "react-icons/fa6";
+import { GoTrash } from "react-icons/go";
+import { IoMdArrowBack } from "react-icons/io";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -11,13 +13,24 @@ import styles from "./MarkdownEditorModal.module.scss";
 export default function MarkdownEditorModal({
   visibility,
   value = "",
+  showDelete = true,
+  showBack = true,
   onSave,
+  onDelete,
+  onBack,
   onUnboundClick,
   onVisible,
 }: {
   visibility: boolean;
   value?: string;
+  showDelete?: boolean;
+  showBack?: boolean;
   onSave?: (e: React.MouseEvent<HTMLButtonElement>, editorText: string) => void;
+  onDelete?: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    editorText: string,
+  ) => void;
+  onBack?: (e: React.MouseEvent<HTMLButtonElement>, editorText: string) => void;
   onUnboundClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onVisible?: () => void;
 }) {
@@ -73,15 +86,44 @@ export default function MarkdownEditorModal({
             </Markdown>
           </div>
         )}
-        <button
-          onClick={(e) => onSave && onSave(e, editorText)}
+        <div
           className={
-            "bg-bg w-[80%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-accent hover:text-text-primary hover:border-accent hover:brightness-120 border-border border-2 transition " +
-            (isEditable ? "hidden" : "visible")
+            "flex w-[80%] gap-5 " +
+            (showDelete ? "translate-x-[10%]" : "justify-center")
           }
         >
-          Save
-        </button>
+          <button
+            onClick={(e) => onSave && onSave(e, editorText)}
+            className={
+              "bg-bg w-[80%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-accent hover:text-text-primary hover:border-accent hover:brightness-120 border-border border-2 transition " +
+              (isEditable ? "hidden" : "visible")
+            }
+          >
+            Save
+          </button>
+          {showDelete && (
+            <button
+              onClick={(e) => onDelete && onDelete(e, editorText)}
+              className={
+                "bg-bg w-[10%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-red-400 hover:text-text-primary hover:border-red-400 hover:brightness-120 border-border border-2 transition flex justify-center items-center " +
+                (isEditable ? "hidden" : "visible")
+              }
+            >
+              <GoTrash size={30} />
+            </button>
+          )}
+          {showBack && (
+            <button
+              onClick={(e) => onBack && onBack(e, editorText)}
+              className={
+                "bg-bg w-[10%] h-15 text-text-inverse rounded-sm shadow-lg hover:bg-orange-400/80 hover:text-text-primary hover:border-orange-400/80 hover:brightness-120 border-border border-2 transition flex justify-center items-center " +
+                (isEditable ? "hidden" : "visible")
+              }
+            >
+              <IoMdArrowBack size={30} />
+            </button>
+          )}
+        </div>
       </div>
     </Modal>
   );

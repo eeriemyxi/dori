@@ -13,7 +13,7 @@ import Popover from "@/components/Popover";
 import * as persist from "@/utils/persistence";
 
 const DEFAULT_CONTENT =
-  "# Sample Content\n\nYou can double-click or double-tap to edit this content.";
+  "# Sample Content\nYou can double-click or double-tap to edit this content.";
 
 export default function Home() {
   const data = useMemo(() => persist.load_data(), []);
@@ -83,6 +83,19 @@ export default function Home() {
           });
           persist.save_data(data);
           setActiveDate(null);
+        }}
+        onDelete={(_, __) => {
+          if (activeDate === null) throw new Error("not possible");
+          delete data.notes[activeDate];
+          setMarks((prev) => {
+            const mark = activeDate === getDateKey(today) ? "today" : "normal";
+            return { ...prev, [activeDate]: mark };
+          });
+          persist.save_data(data);
+          setActiveDate(null);
+        }}
+        onBack={(_, __) => {
+          return setActiveDate(null);
         }}
       />
     </div>
